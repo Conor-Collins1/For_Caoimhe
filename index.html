@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For Caoimhe</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #1a202c; 
+        }
+        .fancy-font {
+            font-family: 'Great+Vibes', cursive;
+        }
+
+        
+        .snow {
+            position: absolute;
+            top: -10px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .snow-flake {
+            position: absolute;
+            top: -10px;
+            background-color: white;
+            border-radius: 50%;
+            opacity: 0.7;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(105vh);
+                opacity: 0;
+            }
+        }
+        
+    </style>
+</head>
+<body class="bg-gradient-to-br from-red-900 via-red-950 to-gray-900 min-h-screen flex items-center justify-center p-4">
+
+    
+    <div class="snow" id="snow-container"></div>
+
+    
+    <div class="w-full max-w-sm bg-white/10 backdrop-blur-lg rounded-3xl shadow-2xl p-6 text-white border border-white/20 relative overflow-hidden">
+        
+        <div class="text-center mb-6 z-20 relative">
+            
+            <h1 class="fancy-font text-5xl text-yellow-300 drop-shadow-lg">
+                For Caoimhe My Love
+            </h1>
+            <h2 class="text-2xl font-semibold mt-2" id="countdown-timer">
+                Counting down to Christmas...
+            </h2>
+            <p class="text-sm opacity-80 mt-2">Click a box to see a reason I love you ❤️</p>
+        </div>
+
+        
+        <div id="calendar-grid" class="grid grid-cols-4 gap-3 z-20 relative">
+           
+        </div>
+
+    </div>
+
+    <!-- This is the pop-up (modal) that shows the message -->
+    <div id="message-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 hidden z-50">
+        <div class="bg-white text-gray-800 rounded-2xl shadow-xl max-w-xs w-full p-6 relative">
+            <!-- Close Button -->
+            <button id="modal-close" class="absolute top-2 right-3 text-2xl text-gray-400 hover:text-gray-600">&times;</button>
+            
+            <!-- Message content will be put here by JavaScript -->
+            <div id="modal-content" class="text-center">
+                <div id="modal-day" class="text-3xl font-bold text-red-700 mb-3">Day 1</div>
+                <p id="modal-text" class="text-lg">This is the reason I love you.</p>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+       
+        const loveReasons = {
+            1: "Because I have never felt closer to anyone ever in my entire life.",
+            2: "The way that I know you will allways be there for me no matter what and I can trust you with anything.",
+            3: "Your eyes and how they could light up an entire room, they're truly the most beautiful things i've ever seen.",
+            4: "Because I have never been so excited to celebrate christmas and give you all your presents.",
+            5: "your smile it's truly amazing it allways makes me feel like everything is going to be ok and makes me so happy.",
+            6: "our 'us' jokes that nobody else would understand.",
+            7: "how you're not afraid to be your true, quirky self.",
+            8: "your patience with me, even when I'm being difficult.",
+            9: "the way you look at me. It makes me feel so loved.",
+            10: "your intelligence and the way I learn from you every day.",
+            11: "how safe and warm I feel when I'm in your arms.",
+            12: "your terrible (but adorable) dancing.",
+            13: "your thoughtfulness. You remember the little things.",
+            14: "how you support my goals, no matter how big or small.",
+            15: "your cooking! (Or your willingness to try!)",
+            16: "the way we can just be silent together and feel comfortable.",
+            17: "your smile. I'll never get tired of seeing it.",
+            18: "your sense of adventure and willingness to try new things.",
+            19: "how you make even the most boring errands fun.",
+            20: "your strength and how you've handled every challenge.",
+            21: "the way you care for your friends and family.",
+            22: "how you inspire me to be a better person.",
+            23: "our late-night talks about everything and nothing.",
+            24: "knowing that you're my partner, my best friend and i get to keep you forever.",
+            25: "Because you are you. Every single part of you. Merry Christmas, my love."
+        };
+
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const grid = document.getElementById('calendar-grid');
+            const countdownDisplay = document.getElementById('countdown-timer');
+            
+            // Modal elements
+            const modal = document.getElementById('message-modal');
+            const modalDay = document.getElementById('modal-day');
+            const modalText = document.getElementById('modal-text');
+            const modalClose = document.getElementById('modal-close');
+
+            // Date logic
+            const today = new Date();
+            // Uncomment this line to test a specific date ---
+            // const today = new Date("2025-12-10T10:00:00"); 
+            
+            const todayDay = today.getDate();
+            const todayMonth = today.getMonth(); // 0 = January, 11 = December
+            const currentYear = today.getFullYear();
+            
+            const christmas = new Date(currentYear, 11, 25);
+            
+            // Calculate days left
+            const oneDay = 1000 * 60 * 60 * 24;
+            const daysLeft = Math.ceil((christmas.getTime() - today.getTime()) / oneDay);
+
+            // Update countdown timer
+            if (daysLeft > 0) {
+                countdownDisplay.textContent = `${daysLeft} days until Christmas!`;
+            } else if (daysLeft === 0) {
+                countdownDisplay.textContent = "It's Christmas Day! ❤️";
+            } else {
+                countdownDisplay.textContent = "Merry (late) Christmas, Love!";
+            }
+
+            // Decide which day is "unlocked"
+            // It's only December if todayMonth is 11
+            const currentDayInDecember = (todayMonth === 11) ? todayDay : 0;
+
+            // Create the 25 boxes
+            for (let day = 1; day <= 25; day++) {
+                const dayBox = document.createElement('div');
+                dayBox.className = 'h-20 rounded-lg flex items-center justify-center text-3xl font-bold shadow-lg transition-all duration-300';
+                dayBox.textContent = day;
+
+                if (day < currentDayInDecember) {
+                    // --- PAST DAYS (Unlocked) ---
+                    dayBox.classList.add('bg-green-600', 'cursor-pointer', 'hover:bg-green-500', 'hover:scale-105');
+                    dayBox.addEventListener('click', () => showMessage(day));
+                } else if (day === currentDayInDecember) {
+                    // --- TODAY (Highlighted) ---
+                    dayBox.classList.add('bg-yellow-400', 'text-gray-900', 'cursor-pointer', 'hover:scale-105', 'animate-pulse');
+                    dayBox.addEventListener('click', () => showMessage(day));
+                } else {
+                    // --- FUTURE DAYS (Locked) ---
+                    dayBox.classList.add('bg-gray-700', 'opacity-50');
+                    dayBox.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>`;
+                }
+                
+                grid.appendChild(dayBox);
+            }
+
+            // Function to show the message in the modal
+            function showMessage(day) {
+                modalDay.textContent = `Day ${day}`;
+                modalText.textContent = loveReasons[day] || "You're so amazing! Merry Christmas!";
+                modal.classList.remove('hidden');
+            }
+
+            // Function to hide the modal
+            function hideModal() {
+                modal.classList.add('hidden');
+            }
+
+            // Add event listeners for closing the modal
+            modalClose.addEventListener('click', hideModal);
+            modal.addEventListener('click', (e) => {
+                // Only close if they click on the dark background, not the white box
+                if (e.target === modal) {
+                    hideModal();
+                }
+            });
+
+            // --- Snow Effect ---
+            const snowContainer = document.getElementById('snow-container');
+            const flakes = 20; // Number of snowflakes
+            for (let i = 0; i < flakes; i++) {
+                const flake = document.createElement('div');
+                flake.className = 'snow-flake';
+                
+                const size = Math.random() * 5 + 2; // 2px to 7px
+                flake.style.width = `${size}px`;
+                flake.style.height = `${size}px`;
+                
+                flake.style.left = `${Math.random() * 100}%`;
+                
+                const duration = Math.random() * 5 + 5; // 5 to 10 seconds
+                flake.style.animationDuration = `${duration}s`;
+                
+                const delay = Math.random() * 5; // 0 to 5 seconds
+                flake.style.animationDelay = `${delay}s`;
+                
+                snowContainer.appendChild(flake);
+            }
+        });
+    </script>
+</body>
+</html>
